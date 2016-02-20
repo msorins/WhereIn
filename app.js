@@ -53,11 +53,10 @@ app.get('/set_theme_cookie/:id', function(req, res) {
   res.send('user ' + id);
 });
 
+getRankingDb() ;
+
 //Get coordonates from DB
 var connection = mysql.createConnection(connect_sql);
-
-//Connect to MYSQL
-//connection.connect();
 
 //Make the Query to retrieve gps coordonates
 console.log("MYSQL Query process started");

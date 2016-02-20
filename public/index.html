@@ -36,6 +36,13 @@
 	  body{
 	  	background-image: url("/img/bg.png"); 
 	  }
+
+    .bg1{
+       background-image: url("img/map2.png");
+      background-size:     cover;                     
+       background-repeat:   no-repeat;
+       background-position: center center;  
+    }
 </style>
  <!-- Modal: -->
   <div id="modal1" class="modal">
@@ -55,15 +62,37 @@
         </ul>
 
       </div>
-	    <div id="test2" class="col s12">Test 2</div>
-	    <div id="test4" class="col s12">
-	     <select id="theme_list" onchange="theme()" style="margin-top:20px;">
-		      <option value="" disabled selected>Alegere tema</option>
-		      <option value="1">Albastru</option>
-		      <option value="2">Portocaliu</option>
-		      <option value="3">Rosu</option>
-		 </select>
 
+	    <div id="test2" class="col s12 bg1">
+         <div id="bg1" style="min-height:500px;" class="container">
+              <div style="background-color:rgba(255,255,255,0.94) " id="flow-text-demo" class="card-panel">
+              <p class="flow-text">
+               <i class="small material-icons">info</i>
+                <i style="margin-left:5px;">WhereIn...</i>" <br><br>  Este un joc social care iti pune bataie cunostiintele de geografie .
+
+                </p>
+              <p class="flow-text">Scopul acestui joc este sa recunosti locatia prezentata in partea de sus a paginii si sa o plasezi cat mai precis pe harta.
+              </p>
+             
+              <hr><br>
+              <p class="flow-text">
+                   <i class="small material-icons">description</i> <span style="text-align:center">Durata unei runde de joc este de 20 secunde.</span><br><br>
+                   Pentru a putea aparea in clasament este necesara <a class="modal-trigger" href="#modal2">logarea</a>
+              </p>
+
+               </div>
+
+         </div>
+      </div>
+	    <div id="test4" class="col s12">
+      <div class="container" style="margin-top:20px;">
+  	     <select id="theme_list" onchange="theme()">
+  		      <option value="" disabled selected>Alegere tema</option>
+  		      <option value="1">Albastru</option>
+  		      <option value="2">Portocaliu</option>
+  		      <option value="3">Rosu</option>
+  		   </select>
+      </div>
 	    </div>
 	  </div>
     </div>
