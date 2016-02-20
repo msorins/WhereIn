@@ -64,17 +64,7 @@ console.log("MYSQL Query process started");
 connection.query('SELECT * FROM  `wherein` ', function(err, rows, fields) {
   if (err) throw err;
 
-  connection.query('SELECT * FROM  `users` ORDER BY  `users`.`total_games` DESC LIMIT 0 , 30', function(err, rows, fields) {
-	  if (err) throw err;
-
-	  connection.end();
-	  for(var i=0; i<rows.length; i++)
-	  	game.dbRanking.push(rows[i]);
-
-	  console.log("Game dbRanking fetched ");
-	});
-
-
+  connection.end();
 
   for(var i=0; i<rows.length; i++)
   	game.gpsList.push(rows[i]);
@@ -323,10 +313,27 @@ function update_user_statistics()
 			});
 		
 		}
+		getRankingDb();
 
 		game.statistics = [];
 		connection.end();
 	},120000);
+}
+
+function getRankingDb() {
+
+	 var connection = mysql.createConnection(connect_sql);
+	 game.dbRanking = [];
+	 connection.query('SELECT * FROM  `users` ORDER BY  `users`.`total_games` DESC LIMIT 0 , 30', function(err, rows, fields) {
+	  if (err) throw err;
+
+	  connection.end();
+	  for(var i=0; i<rows.length; i++)
+	  	game.dbRanking.push(rows[i]);
+
+	  io.emit("gameResRanking", game.dbRanking);
+	  console.log("Game dbRanking fetched ");
+	});
 }
 
 //Calculare Distanta intre 2 pc

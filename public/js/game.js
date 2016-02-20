@@ -52,7 +52,7 @@ socket.on("game_stats", function(d_game){
 //Receive last Game Ranking ( at the end )
 socket.on("game_ranking", function(d_game){
 	var star;
-	delete_nodes();
+	delete_nodes("ranking");
 	var i=0;
 	d_game.forEach(function(user){
 		i++;
@@ -117,14 +117,16 @@ setInterval(function(){
 },1000);
 
 //Delete childs of element
-function delete_nodes(){
-	var myNode = document.getElementById("ranking");
+function delete_nodes(id){
+	var myNode = document.getElementById(id);
 	while (myNode.firstChild) {
 	    myNode.removeChild(myNode.firstChild);
 	}
 } 
 
 socket.on("gameResRanking", function(data){
+	delete_nodes("dbRanking");
+
 	var star;
 	for(var i=0; i < data.length; i++){
 		if(i<=3)
