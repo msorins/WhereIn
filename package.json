@@ -1,0 +1,20 @@
+{
+  "name": "where-is",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Mircea Sorin",
+  "license": "ISC",
+  "dependencies": {
+    "console-stamp": "^0.2.0",
+    "cookie-parser": "^1.4.1",
+    "events": "^1.1.0",
+    "express": "^4.13.4",
+    "hellojs": "^1.10.1",
+    "mysql": "^2.10.2",
+    "socket.io": "^1.4.5"
+  }
+}

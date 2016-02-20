@@ -1,0 +1,70 @@
+{
+  "name": "hellojs",
+  "version": "1.10.1",
+  "description": "A clientside Javascript library for standardizing requests to OAuth2 web services (and OAuth1 - with a shim)",
+  "homepage": "https://adodson.com/hello.js",
+  "main": "dist/hello.all.js",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com/MrSwitch/hello.js"
+  },
+  "keywords": [
+    "oauth",
+    "oauth1.0",
+    "oauth2",
+    "api",
+    "facebooks",
+    "google",
+    "windows",
+    "linkedin",
+    "twitter"
+  ],
+  "author": {
+    "name": "Andrew Dodson",
+    "email": "andrewjdodson@gmail.com"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/MrSwitch/hello.js/issues"
+  },
+  "scripts": {
+    "test": "grunt test && npm run test:browserstack",
+    "test:browserstack": "bash browserstack.sh",
+    "test:browserstack:env": "source .env.sh && npm run test:browserstack"
+  },
+  "devDependencies": {
+    "browserstack-runner": "^0.3.7",
+    "grunt": "^0.4.5",
+    "grunt-banner": "^0.4.0",
+    "grunt-bumpup": "^0.6.1",
+    "grunt-contrib-jshint": "^0.10.0",
+    "grunt-contrib-watch": "^0.6.1",
+    "grunt-jscs": "^1.8.0",
+    "grunt-mocha-phantomjs": "~0.4.3",
+    "mocha": "^1.18.2",
+    "shunt": "^0.1.4",
+    "sinon": "~1.7.3"
+  },
+  "gitHead": "807c60e76f0db191e2d53eae3b2c5e9a6b21d354",
+  "_id": "hellojs@1.10.1",
+  "_shasum": "e2a6d7f6ace2394a08565caa68143b9057628086",
+  "_from": "hellojs@latest",
+  "_npmVersion": "3.3.12",
+  "_nodeVersion": "5.4.1",
+  "_npmUser": {
+    "name": "adodson",
+    "email": "andrewjdodson@gmail.com"
+  },
+  "dist": {
+    "shasum": "e2a6d7f6ace2394a08565caa68143b9057628086",
+    "tarball": "http://registry.npmjs.org/hellojs/-/hellojs-1.10.1.tgz"
+  },
+  "maintainers": [
+    {
+      "name": "adodson",
+      "email": "andrewjdodson@gmail.com"
+    }
+  ],
+  "directories": {},
+  "_resolved": "https://registry.npmjs.org/hellojs/-/hellojs-1.10.1.tgz"
+}

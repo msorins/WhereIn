@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
+  <title>Where in Brasov - a social game</title>
+
+  <!-- CSS  -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+  <link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+
+   <!-- Script for theme change -->
+  <script src="js/theme.js"></script>
+  
+  <!-- Favicon -->
+  <link rel="shortcut icon" type="image/png" href="img/favicon.png"/>
+
+</head>
+<body onload="initMap()" style="min-width:710px;">
+<style>
+
+      #street-view {
+      	margin-top:5px;
+        height:300px;
+        min-width: 400px;
+		width: 100%;
+		border-radius:2px
+      }
+	  #map_canvas {
+	  height:400px;
+	  width:100%;
+	  margin-left:-10px;
+	  border-radius:2px;
+	  }
+	  body{
+	  	background-image: url("/img/bg.png"); 
+	  }
+</style>
+ <!-- Modal: -->
+  <div id="modal1" class="modal">
+    <div class="modal-content">
+        <div style="width:101%; min-height:500px;"class="row">
+	    <div class="col s12">
+	      <ul class="tabs">
+	        <li class="tab col s3"><a href="#test1">Clasament utilizatori</a></li>
+	        <li class="tab col s3"><a class="active" href="#test2">Despre website</a></li>
+	        <li class="tab col s3"><a href="#test4">Setari</a></li>
+	      </ul>
+	    </div>
+	    <div id="test1" class="col s12">
+       
+        <ul class="collection ranking z-depth-1 " id="dbRanking">
+          
+        </ul>
+
+      </div>
+	    <div id="test2" class="col s12">Test 2</div>
+	    <div id="test4" class="col s12">
+	     <select id="theme_list" onchange="theme()" style="margin-top:20px;">
+		      <option value="" disabled selected>Alegere tema</option>
+		      <option value="1">Albastru</option>
+		      <option value="2">Portocaliu</option>
+		      <option value="3">Rosu</option>
+		 </select>
+
+	    </div>
+	  </div>
+    </div>
+    <div class="modal-footer">
+      <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat"><i style="font-size:32px;" class="material-icons">done</i></a>
+    </div>
+  </div>
+
+   <div id="modal2" class="modal">
+    <div class="modal-content">
+        <h4>Autentificare</h4><hr>
+        <div class="row" style="width:70%">
+        	<div class="col s12"><p style="text-align:center;"><img  id='google' class="profile" style="height:70px;" class="center-align" src="img/google.png"></p></div>
+        	<hr>
+        	<div class="col s12"><p style="text-align:center;"><img  id='facebook' class="profile" style="height:60px;" class="center-align" src="img/facebook.png"></p></div>
+        	<hr>
+        	<div class="col s12"><p style="text-align:center;"><img  id='windows' class="profile" style="height:100px;" class="center-align" src="img/microsoft.png"></p></div>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+      <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat"><i style="font-size:32px;" class="material-icons">done</i></a>
+    </div>
+  </div>
+
+  <div id="modal3" class="modal">
+    <div class="modal-content">
+        <h4>Despre utilizator</h4><hr>
+       
+    </div>
+    
+    <div class="modal-footer">
+       <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat"><i style="font-size:32px;" class="material-icons">done</i></a>
+    </div>
+  </div>
+
+  <div id="modal4" class="modal modal-fixed-footer">
+    <div class="modal-content">
+      <h4>Eroare - bresa de securitate</h4>
+      <p>A bunch of text</p>
+    </div>
+    <div class="modal-footer">
+      <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat ">Agree</a>
+    </div>
+  </div>
+          
+
+  <nav id="navbar" onload="resize" class="" role="navigation">
+    <div class="nav-wrapper container"><a id="logo-container" href="/" class="brand-logo">Where in ... ? </a>
+      <ul class="right hide-on-med-and-down">
+        <li><a href="#!" class="breadcrumb"><i class="medium material-icons">av_timer</i>&nbsp;&nbsp;<span id="crt_countdown"></span>  </a></li>
+        <li style="margin-left:100px;"><a class="modal-trigger" href="#modal1"> <i class="material-icons">view_module</i></a>  </li>
+        <li id="login-ul"><a class="modal-trigger" href="#modal2"> <i class="material-icons">perm_identity</i></a>  </li>
+        <li style="display:none" id="user-ul"><a class="modal-trigger" href="#modal3"> <i style="font-size:20px;"><span id="user_name"></span></i></a>  </li>
+
+      </ul>
+
+      <ul id="nav-mobile" class="side-nav">
+        <li><a href="#">Navbar Link</a></li>
+      </ul>
+      <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
+    </div>
+  </nav>
+ <div id="container" style="width:97%; margin:auto;">
+	 	<div class="z-depth-1" id="street-view"></div>
+		<div class="row">
+			<div style="margin-top:8px; " class="col s4">
+				<div class="z-depth-1" style="width:105%;" id="map_canvas"></div>
+			</div>
+
+
+			<div style="min-height:450px;" class="col s4">
+				 <ul style="overflow-y: scroll;" class="collection ranking z-depth-1 " id="ranking">
+				  
+	  			 </ul>
+	           
+			</div>
+			
+			<div class="col s4 card">
+				<div style="height:450px; overflow-y: scroll;" class="chatbox" id="chatbox">
+				</div>
+				<form action="javascript:void(0)">
+					 <div class="input-field">
+						  <i class="material-icons prefix">chat_bubble</i>
+							 <input id="message" type="text" class="validate">
+						  <label for="icon_prefix">Trimite mesaj</label>
+					  </div>
+				 </form>
+			</div>
+		</div>
+   </div>
+          
+ 
+	<script>
+	//Page Layout
+	resize();
+	
+	window.onresize = function(event) {
+		resize();
+	};
+	
+	function resize(){
+		var p = 38/100 *  window.innerHeight;
+		var sv = document.getElementById("street-view");
+		sv.style.height = p +"px";
+		
+		p=53/100 *  window.innerHeight;
+		var sv = document.getElementById("map_canvas");
+		sv.style.height = p +"px";
+		
+		p=45/100 *  window.innerHeight;
+		var sv = document.getElementById("chatbox");
+		sv.style.height = p +"px";
+		
+		p=53/100 *  window.innerHeight;
+		var sv = document.getElementById("ranking");
+		sv.style.height = p +"px";
+		
+	}
+
+	
+
+	</script>
+
+  <footer style="margin-top:-25px;" class="page-footer">
+    <div id="footerbar"  class="footer-copyright">
+      <div  class="container">
+      Made by <a style="color:white" class="text-lighten-3" href="https://mirceasorin.ro">Mircea Sorin</a>
+      </div>
+    </div>
+  </footer>
+
+
+  <!--  Scripts-->
+  <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <script src="js/materialize.js"></script>
+  <script src="js/init.js"></script>
+
+  <!-- Script for Google Map ( To select answer position ) -->
+  <script src="js/maps.js"></script>
+
+  <!-- Script for Socket.Io -->
+  <script src="js/socket.io-1.4.5.js"></script>
+  
+  <!-- Script for Auth ( HelloJS ) -->
+  <script src='hellojs/dist/hello.all.js'></script>
+
+   <!-- Game Script : including Chat, Auth and Game Engine -->
+  <script src="js/game.js"></script>
+
+   
+
+
+  <!-- Script for Google Maps Streetview API -->
+  <script async defer
+         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAfJle7DJw9sRSYO48oKfL8CQLCQiHDdu4&signed_in=true">
+  </script>
+	
+
+  <script type="text/javascript">
+  $(document).ready(function(){
+    // the "href" attribute of .modal-trigger must specify the modal ID that wants to be triggered
+    $('.modal-trigger').leanModal();
+    $('select').material_select();
+        
+  });
+  </script>
+  </body>
+</html>
+ 
