@@ -1,6 +1,6 @@
 # README #
 
-This README would normally document whatever steps are necessary to get your application up and running.
+WhereIn este un joc social care implica cunostiinte de geografie .
 
 ### What is this repository for? ###
 
