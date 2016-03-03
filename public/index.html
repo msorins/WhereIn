@@ -34,12 +34,13 @@
 
     	#wrap-it
      	{
-     		width:90%; 
+     		width:85%; 
      		margin:auto;
+        height:1260px;
      	}
 
     	#content-flexAll-container{
-    		width:90%; 
+    		width:87%; 
 		    margin:auto;
     	}
 
@@ -63,13 +64,13 @@
      	{
      		width:97%; 
      		margin:auto;
+        height:auto;
      	}
 	     #street-view {
-	      	margin-top:10px;
 	        height:300px;
 	        min-width: 400px;
-			width: 100%;
-			border-radius:2px
+    			width: 100%;
+    			border-radius:2px
 	      }
 
 		 #map_canvas {
@@ -97,17 +98,21 @@
 		    	flex:1;
 		   }
 
-		   .chat-flex-container{
-		    	margin-left:10px;
-		    	display:flex;
-		    	flex-flow: column;
-		    	justify-content: space-between;
-		    }
 		}
 
     .flex-social{
       display:flex;
       justify-content: space-around;
+    }
+
+    .chat-flex-container{
+          margin-left:10px;
+          display:flex;
+          flex-flow: column;
+          justify-content: space-between;
+        }
+    #street-view{
+      margin-top:10px;
     }
 </style>
  <!-- Modal: -->
@@ -225,7 +230,7 @@
     </div>
   </nav>
   <!-- Content -->
- <div id="wrap-it">
+ <div  id="wrap-it">
 	 <div id="container"  class="content-flexAll-container">
 		 	<div class="z-depth-1" id="street-view"></div>
 			<div id="content-flex-container">
@@ -241,7 +246,7 @@
 				</div>
 				
 				<div class="card content-flex-item chat-flex-container" id="chatbox">
-					<div style="overflow-y: scroll; margin-bottom:20px; font-size:19px;" class="chatbox flow-text">
+					<div style="overflow-y: scroll; margin-bottom:20px; font-size:19px;" class="chatbox flow-text" id="chatboxID">
 					</div>
 					<form class="chat-flex-send" action="javascript:void(0)">
 						 <div class="input-field">

@@ -208,18 +208,31 @@ document.forms[0].onsubmit = function () {
     input.value = '';
 };
 
+
 function printMessage(message){
-	var p = document.createElement("p");
-	if(typeof message.user !== 'undefined')
-		p.innerText  = `${message.user.name}: ${message.msg}`;
+	var p;
+
+	if(message == 'Conectat la server !')
+		p = `<p style="margin-left:15px;">`;
 	else
-		p.innerText = message;
+	    p = `<p style="margin-left:15px; margin-top:-15px;">`;
 
-	if(p.innerText != "Conectat la server !")
-		p.style.marginTop = "-15px";
-	p.style.marginLeft= "10px";
+	if(typeof message.user !== 'undefined')
+		if(message.user.name.substring(0,4) != 'user')
+			p  += `<a onclick="getUserProfile('${message.user.name}')" href="#modal3" class="title modal-trigger"> ${message.user.name}</a>: ${message.msg}`;
+		else
+			p  += `${message.user.name}: ${message.msg}`;
+	else
+		p += message;
 
-	document.querySelector("div.chatbox").appendChild(p);
+	p +="</p>";
+
+	$("div.chatbox").append(`
+		${p}
+	`);
+
+
+	document.getElementById('chatboxID').scrollTop = 9999999;
 }
 
 //AUTH PART 
