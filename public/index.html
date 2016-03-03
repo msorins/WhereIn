@@ -34,7 +34,7 @@
 
     	#wrap-it
      	{
-     		width:85%; 
+     		width:87%; 
      		margin:auto;
         height:1260px;
      	}
@@ -156,13 +156,26 @@
          </div>
       </div>
 	    <div id="test4" class="col s12">
-      <div class="container" style="margin-top:20px;">
-  	     <select id="theme_list" onchange="theme()">
-  		      <option value="" disabled selected>Alegere tema</option>
-  		      <option value="1">Albastru</option>
-  		      <option value="2">Portocaliu</option>
-  		      <option value="3">Rosu</option>
-  		   </select>
+      <div style="width:100%; margin-top: 10px;" class="container card-panel" style="margin-top:20px;">
+      <h5>Aspect website </h5>
+      <br>
+       <div class="row">
+          <div class="col s6">
+      	     <select id="theme_list" onchange="theme()">
+      		      <option value="" disabled selected>Alegere tema</option>
+      		      <option value="1">Albastru</option>
+      		      <option value="2">Portocaliu</option>
+      		      <option value="3">Rosu</option>
+      		   </select>
+          </div>
+          <div class="col s6">
+               <h6> Layout: </h6>
+               <p> <span style="display:flex; align-items: center;"> <i class="small material-icons">info</i> &nbsp;&nbsp;In curand </span></p>
+          </div>
+        </div>
+      </div>
+      <div style="width:100%; margin-top: 10px;" class="container card-panel" >
+        <h5> Cont utilizator </h5> <br>
       </div>
 	    </div>
 	  </div>
@@ -198,6 +211,12 @@
     </div>
     
     <div style="margin-top:-50px;" class="modal-footer">
+        <a id="logoutUser" onclick="logoutForce()" style="float:left; display:flex;" href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat">
+
+        <div><img style="height:40px; width:40px;" src="img/logout.png"></div>
+        <div><span style="margin-top:-30px;"> Logout </span></div>
+
+        </a>
        <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat"><i style="font-size:32px;" class="material-icons">done</i></a>
     </div>
   </div>

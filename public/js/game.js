@@ -26,6 +26,11 @@ socket.on("connect", function(){
 	socket.emit("game_req");
 	socket.emit("game_connected_users_req");
 	socket.emit("gameReqRanking");
+	if( user.name.length !=0  && user.name.substring(0,4) != "user")
+	{
+		console.log(user);
+		socket.emit('userDB', user);
+	}
 });
 
 //Receive Game Info from Server 
@@ -62,10 +67,16 @@ socket.on("game_ranking", function(d_game){
 		else
 			star = '';
 
+		var uN;
+		if(user.name.substring(0,4) != "user")
+			uN = `<a onclick="getUserProfile('${user.name}')" href="#modal3" class="title modal-trigger">${user.name}</a>`;
+		else
+			uN = `${user.name}`;
+
 		$("#ranking").append(`
 			<li class="collection-item avatar">
 			      <img style="height:50px; width:50px;" src="${user.thumbnail}"  class="circle">
-			      <a onclick="getUserProfile('${user.name}')" href="#modal3" class="title modal-trigger">${user.name}</a>
+			      ${uN}
 			      <p>Locul ${i} <br>
 			         Distanta : ${user.dst.toFixed(2)} km 
 			      </p>
@@ -124,7 +135,7 @@ function delete_nodes(id){
 	}
 } 
 
-//Add last game ranking data to HTML
+//Add ranking data from DB
 socket.on("gameResRanking", function(data){
 	delete_nodes("dbRanking");
 
@@ -157,17 +168,28 @@ function getUserProfile(user_name)
 	console.log(user_name);
 }
 
+function has(object, key) {
+     return object ? hasOwnProperty.call(object, key) : false;
+}
+
 socket.on("userProfileRes", function(data){
 	delete_nodes("UserProfileContent");
 	var profile_picture, rating;
-	console.log("Typeof: " + typeof data.id_facebook);
-	if(typeof data.id_facebook !== 'undefined')
+	if(has(data,'id_facebook'))
 		profile_picture = `https://graph.facebook.com/${data.id_facebook}/picture/?width=300&heigth=335`;
 	else 
-		if(typeof data.id_facebook !== 'undefined')
+		if(has(data,'id_google'))
 			profile_picture = `https://plus.google.com/s2/photos/profile/{$data.id_google}?sz=330`;
 		else
 			profile_picture = 'img/no-avatar.png';
+
+	/*
+	console.log(`Nume 1: ${user.name} , Nume 2: ${data.name}`);
+	if(user.name == data.name)
+		document.getElementById("logoutUser").style.display = "flex";
+	else
+		document.getElementById("logoutUser").style.display = "none";
+	*/
 
 	rating = (data.total_games / data.games_won ) * 10 ; rating=rating.toFixed(2);
 	$("#UserProfileContent").append(`
@@ -244,43 +266,22 @@ var logged_in = false;
 		hello( r.network ).api( '/me' ).then( function(p) {
 			if(!logged_in)
 			{
-				document.getElementById('login-ul').style.display= 'none';
-				document.getElementById('user-ul').style.display= 'block';
-				document.getElementById('user_name').innerHTML = p.name;
-				document.getElementById('userProfileModal').setAttribute('onclick',`getUserProfile('Sorin Soo')`);
-
-				logged_in=true;
-				var label = document.getElementById(r.network);
-				label.innerHTML = "<img src='"+ p.thumbnail + "' width=24/>Connected to "+ r.network+" as " + p.name + " email :" + p.email;
-
 				//SAVE USER DATA TO OBJECT ( IN ORDER TO BE SEND TO SERVER )
 				user.network = r.network;
 				user.name = p.name;
-				console.log(user.name + " logged in !");
 				user.thumbnail = p.thumbnail;
 				user.email = p.email
 				user.network = r.network;
 				if(user.network == "windows")
-				{
 					user.network = "microsoft";
-					alert("da");
-				}
+				
 				user.id = p.id;
 				
 				//Send socket conaining user info to server
 				socket.emit('userDB', user);
 
 				//Close login modal
-				$('#modal2').closeModal();
-				
-				//Show login confirmation message
-				Materialize.toast('Salut, '+ user.name, 4000) // 4000 is the duration of the toast
-
-				// On chrome apps we're not able to get remote images
-				// This is a workaround
-				if (typeof(chrome) === 'object') {
-					img_xhr(label.getElementsByTagName('img')[0], p.thumbnail);
-				}
+				$('#modal2').closeModal();				
 			}
 			
 		});
@@ -302,21 +303,51 @@ var logged_in = false;
 	});
 
 
-	var b = Array.prototype.slice.call(document.getElementsByClassName('profile'));
-	b.forEach(function(btn){
-		btn.onclick = function(){
-			logged_in = false ;
-			hello(this.id).login();
-		};
-	});
+socket.on("userLoginConfirm", function(data){
+	user.name = data.name;
+	document.getElementById('login-ul').style.display= 'none';
+	document.getElementById('user-ul').style.display= 'block';
+	document.getElementById('user_name').innerHTML = data.name;
+	document.getElementById('userProfileModal').setAttribute('onclick',`getUserProfile('${data.name}')`);
 
-	// Utility for loading the thumbnail in chromeapp
-	function img_xhr(img, url) {
-		var xhr = new XMLHttpRequest();
-		xhr.open('GET', url, true);
-		xhr.responseType = 'blob';
-		xhr.onload = function(e) {
-			img.src = window.URL.createObjectURL(this.response);
-		};
-		xhr.send();
-	}
+	//Show login confirmation message
+	Materialize.toast('Salut, '+ user.name, 4000) // 4000 is the duration of the toast
+
+	console.log("Server confirmed login, hello "+ user.name);
+});
+
+
+//logout function -> after logout it refreshes the page
+function logoutForce(){
+
+	var network;
+	if(user.network == "microsoft")
+		network = "windows";
+	else
+		network = user.network;
+
+	hello( network ).logout({force:true},function(e){
+		console.log("logout-force",e);
+		location.reload();
+	});
+}
+
+
+var b = Array.prototype.slice.call(document.getElementsByClassName('profile'));
+b.forEach(function(btn){
+	btn.onclick = function(){
+		logged_in = false ;
+		hello(this.id).login();
+	};
+});
+
+// Utility for loading the thumbnail in chromeapp
+function img_xhr(img, url) {
+	var xhr = new XMLHttpRequest();
+	xhr.open('GET', url, true);
+	xhr.responseType = 'blob';
+	xhr.onload = function(e) {
+		img.src = window.URL.createObjectURL(this.response);
+	};
+	xhr.send();
+}

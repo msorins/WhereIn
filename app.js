@@ -81,7 +81,6 @@ connection.query('SELECT * FROM  `wherein` ', function (err, rows, fields) {
 
 //Server request & response part
 io.on("connection", function(socket){
-
 	//Restrict ( by IP ) multiple user connection.Use an array to store every IP addres
 	if(APP_DEBUG === false)
 	{
@@ -141,28 +140,37 @@ io.on("connection", function(socket){
 
 	//DO DB operations with user data ( add accounts....)
 	socket.on('userDB', function(user){
-
 		//Check if User is Registred
 		connection = mysql.createConnection(connect_sql);
 
 		var query = "SELECT * FROM  `users` WHERE  `email` LIKE  '"+user.email+"'";
 		connection.query(query, function(err, rows, fields) {
 	  		if (err) throw err;
+
 	  		if(rows.length === 0) // IF It is not registered add all info about him
 	  		{
 	  				query = "INSERT INTO  `admin_wherein`.`users` (`id` ,`id_"+user.network+"` ,`name` ,`email` ,`thumbnail`)VALUES (NULL ,  '"+user.id+"',  '"+user.name+"',  '"+user.email+"',  '"+user.thumbnail+"')";
 	  				connection.query(query, function(err,rows,fields){
 	  					if(err) throw err;
+
+	  				//Send back the user his valid info
+		  			socket.emit('userLoginConfirm', user);
 	  				});
 	  		}
 	  		else
+	  		{
 	  			if(rows.length === 1 && rows[0]["id_"+user.network] != user.id) // IF a change is required ( compare db network id with current one )
 		  		{
+		  			user.name = row[0].name;
 		  			query = "UPDATE  `admin_wherein`.`users` SET  `id_"+user.network+"` =  '"+user.id+"'  WHERE  `users`.`id` = "+rows[0].id;
-		  			connection.query(query, function(err,rows,field){
 		  				if(err) throw err;
-		  			});
 		  		}
+		  		user.name = rows[0].name;
+
+		  		//Send back the user his valid info
+		  		socket.emit('userLoginConfirm', user);
+	  		}
+	  			
 		  	connection.end();
 	    });
 	    
