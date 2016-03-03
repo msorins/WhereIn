@@ -65,7 +65,7 @@ socket.on("game_ranking", function(d_game){
 		$("#ranking").append(`
 			<li class="collection-item avatar">
 			      <img style="height:50px; width:50px;" src="${user.thumbnail}"  class="circle">
-			      <span class="title">${user.name}</span>
+			      <a onclick="getUserProfile('${user.name}')" href="#modal3" class="title modal-trigger">${user.name}</a>
 			      <p>Locul ${i} <br>
 			         Distanta : ${user.dst.toFixed(2)} km 
 			      </p>
@@ -124,6 +124,7 @@ function delete_nodes(id){
 	}
 } 
 
+//Add last game ranking data to HTML
 socket.on("gameResRanking", function(data){
 	delete_nodes("dbRanking");
 
@@ -138,7 +139,7 @@ socket.on("gameResRanking", function(data){
 		$("#dbRanking").append(`
 			<li class="collection-item avatar">
 			      <img style="height:50px; width:50px;" src="${data[i].thumbnail}"  class="circle">
-			      <span class="title">${data[i].name}</span>
+			      <a onclick="getUserProfile('${data[i].name}')" href="#modal3" class="title modal-trigger">${data[i].name}</a>
 			      <p>Jocuri castigate: ${data[i].games_won} <br>
 			         Rating : ${rating}
 			      </p>
@@ -149,6 +150,47 @@ socket.on("gameResRanking", function(data){
 	}
 });
 
+
+function getUserProfile(user_name)
+{
+	socket.emit("userProfileReq", user_name);
+	console.log(user_name);
+}
+
+socket.on("userProfileRes", function(data){
+	delete_nodes("UserProfileContent");
+	var profile_picture, rating;
+	console.log("Typeof: " + typeof data.id_facebook);
+	if(typeof data.id_facebook !== 'undefined')
+		profile_picture = `https://graph.facebook.com/${data.id_facebook}/picture/?width=300&heigth=335`;
+	else 
+		if(typeof data.id_facebook !== 'undefined')
+			profile_picture = `https://plus.google.com/s2/photos/profile/{$data.id_google}?sz=330`;
+		else
+			profile_picture = 'img/no-avatar.png';
+
+	rating = (data.total_games / data.games_won ) * 10 ; rating=rating.toFixed(2);
+	$("#UserProfileContent").append(`
+			<div style="margin-top:25px" class="row">
+	          <div class="card">
+	            <div class="card-image">
+	              <img style="max-height:300px; overflow:hidden;" src="${profile_picture}">
+	              <span class="card-title">${data.name}</span>
+	            </div>
+	            <div class="card-content">
+	              <p>Jocuri castigate: ${data.games_won}<br>
+	              	 Rating : ${rating}
+	              </p>
+	            </div>
+	            <div class="card-action flex-social">
+	              <a href="https://www.facebook.com/${data.id_facebook}"><img style="height:30px; width:30px;" src="img/profileFacebook.png"></a>
+	              <a href="https://plus.google.com/${data.id_google}"><img style="height:30px; width:30px;" src="img/profileGoogle.png"></a>
+	            </div>
+	          </div>
+	      </div>
+	`);
+	$('#modal3').openModal();
+});
 
 //CHAT PART
 //===========================================================================
@@ -173,6 +215,10 @@ function printMessage(message){
 	else
 		p.innerText = message;
 
+	if(p.innerText != "Conectat la server !")
+		p.style.marginTop = "-15px";
+	p.style.marginLeft= "10px";
+
 	document.querySelector("div.chatbox").appendChild(p);
 }
 
@@ -188,15 +234,16 @@ var logged_in = false;
 				document.getElementById('login-ul').style.display= 'none';
 				document.getElementById('user-ul').style.display= 'block';
 				document.getElementById('user_name').innerHTML = p.name;
+				document.getElementById('userProfileModal').setAttribute('onclick',`getUserProfile('Sorin Soo')`);
+
 				logged_in=true;
 				var label = document.getElementById(r.network);
 				label.innerHTML = "<img src='"+ p.thumbnail + "' width=24/>Connected to "+ r.network+" as " + p.name + " email :" + p.email;
 
-
-				console.log(p);
 				//SAVE USER DATA TO OBJECT ( IN ORDER TO BE SEND TO SERVER )
 				user.network = r.network;
 				user.name = p.name;
+				console.log(user.name + " logged in !");
 				user.thumbnail = p.thumbnail;
 				user.email = p.email
 				user.network = r.network;

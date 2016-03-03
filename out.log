@@ -1,0 +1,22 @@
+[[22:45:16.090]] [LOG]   MYSQL Query process started
+[[22:45:16.123]] [LOG]   Game dbRanking fetched 
+[[22:45:16.132]] [LOG]   MYSQL Query process finished
+[[22:45:16.132]] [LOG]   Starting game
+[[22:45:17.136]] [LOG]   Game started
+[[22:45:17.136]] [LOG]   Game time: 20s
+[[22:45:18.794]] [LOG]   Connected users : 1
+[[22:45:19.808]] [LOG]   Connected users : 2
+[[22:45:22.141]] [LOG]   Game time: 15s
+[[22:45:27.151]] [LOG]   Game time: 10s
+[[22:45:32.153]] [LOG]   Game time: 5s
+[[22:45:37.160]] [LOG]   Ranking process started
+[[22:45:37.161]] [LOG]   Game time: 0s
+[[22:45:38.164]] [LOG]   Game time: -1s
+[[22:45:39.168]] [LOG]   Game time: -2s
+[[22:45:40.162]] [LOG]   Not enough users
+[[22:45:40.163]] [LOG]   Ranking process finished
+[[22:45:40.173]] [LOG]   Game started
+[[22:45:40.174]] [LOG]   Game time: 20s
+[[22:45:45.180]] [LOG]   Game time: 15s
+[[22:45:50.184]] [LOG]   Game time: 10s
+[[22:45:55.189]] [LOG]   Game time: 5s

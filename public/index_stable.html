@@ -17,97 +17,31 @@
   <link rel="shortcut icon" type="image/png" href="img/favicon.png"/>
 
 </head>
-<body onload="initMap()" id="body">
+<body onload="initMap()" style="min-width:710px;">
 <style>
-	 body{
+
+      #street-view {
+      	margin-top:5px;
+        height:300px;
+        min-width: 400px;
+		width: 100%;
+		border-radius:2px
+      }
+	  #map_canvas {
+	  height:400px;
+	  width:100%;
+	  margin-left:-10px;
+	  border-radius:2px;
+	  }
+	  body{
 	  	background-image: url("/img/bg.png"); 
 	  }
 
     .bg1{
        background-image: url("img/map2.png");
-       background-size:     cover;                     
+      background-size:     cover;                     
        background-repeat:   no-repeat;
        background-position: center center;  
-    }
-
-    @media only screen and (max-width: 650px) {
-
-    	#wrap-it
-     	{
-     		width:90%; 
-     		margin:auto;
-     	}
-
-    	#content-flexAll-container{
-    		width:90%; 
-		    margin:auto;
-    	}
-
-    	#content-flex-container{
-	    	display:block;
-	 	 }
-
-	  	 .content-flex-item{
-	    	display:block;
-	  	 }
-
-	  	 .chat-flex-container{
-	    	margin-left:10px;
-	    	display:block;
-	    }
-
-    }
-
-     @media only screen and (min-width: 651px) {
-     	#wrap-it
-     	{
-     		width:97%; 
-     		margin:auto;
-     	}
-	     #street-view {
-	      	margin-top:10px;
-	        height:300px;
-	        min-width: 400px;
-			width: 100%;
-			border-radius:2px
-	      }
-
-		 #map_canvas {
-		    height:400px;
-		    width:100%;
-		    border-radius:2px;
-		  }
-		 
-		 #content-flexAll-container{
-		    display: flex;
-		    flex-flow: :column;
-		    align-items: space-between;
-		    justify-content: space-between;
-		  }
-		  
-		  #content-flex-container{
-		    	display:flex;
-		    	flex-flow: row;
-		    	align-items: stretch;
-		    	height:auto;
-		    	margin:5px;
-		  }
-
-		   .content-flex-item{
-		    	flex:1;
-		   }
-
-		   .chat-flex-container{
-		    	margin-left:10px;
-		    	display:flex;
-		    	flex-flow: column;
-		    	justify-content: space-between;
-		    }
-		}
-
-    .flex-social{
-      display:flex;
-      justify-content: space-around;
     }
 </style>
  <!-- Modal: -->
@@ -184,15 +118,31 @@
     </div>
   </div>
 
-  <div style="max-width:400px;"  id="modal3" class="modal">
+  <div id="modal3" class="modal">
     <div class="modal-content">
-        	 <div id="UserProfileContent">
-
-           </div>
+        <h4>Despre utilizator</h4><hr>
+        	 
+	      <div style="margin-top:25px" class="row">
+	        <div class="col s12 m7">
+	          <div class="card">
+	            <div class="card-image">
+	              <img src="images/sample-1.jpg">
+	              <span class="card-title">Card Title</span>
+	            </div>
+	            <div class="card-content">
+	              <p>I am a very simple card. I am good at containing small bits of information.
+	              I am convenient because I require little markup to use effectively.</p>
+	            </div>
+	            <div class="card-action">
+	              <a href="#">This is a link</a>
+	            </div>
+	          </div>
+	        </div>
+	      </div>
             
     </div>
     
-    <div style="margin-top:-50px;" class="modal-footer">
+    <div class="modal-footer">
        <a href="#!" class=" modal-action modal-close waves-effect waves-green btn-flat"><i style="font-size:32px;" class="material-icons">done</i></a>
     </div>
   </div>
@@ -214,7 +164,7 @@
         <li><a href="#!" class="breadcrumb"><i class="medium material-icons">av_timer</i>&nbsp;&nbsp;<span id="crt_countdown"></span>  </a></li>
         <li style="margin-left:100px;"><a class="modal-trigger" href="#modal1"> <i class="material-icons">view_module</i></a>  </li>
         <li id="login-ul"><a class="modal-trigger" href="#modal2"> <i class="material-icons">perm_identity</i></a>  </li>
-        <li style="display:none" id="user-ul"><a id="userProfileModal" onclick="" > <i style="font-size:20px;"><span id="user_name"></span></i></a>  </li>
+        <li style="display:none" id="user-ul"><a class="modal-trigger" href="#modal3"> <i style="font-size:20px;"><span id="user_name"></span></i></a>  </li>
 
       </ul>
 
@@ -224,43 +174,35 @@
       <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
     </div>
   </nav>
-  <!-- Content -->
- <div id="wrap-it">
-	 <div id="container"  class="content-flexAll-container">
-		 	<div class="z-depth-1" id="street-view"></div>
-			<div id="content-flex-container">
-				<div class="content-flex-item">
-					<div class="z-depth-1" style="width:100%; margin-top:10px;" id="map_canvas"></div>
-				</div>
-
-
-				<div class="content-flex-item" style="margin-left:10px;">
-					 <ul style="overflow-y: scroll;" class="collection ranking z-depth-1 " id="ranking">
-					  
-		  			 </ul>
-				</div>
-				
-				<div class="card content-flex-item chat-flex-container" id="chatbox">
-					<div style="overflow-y: scroll; margin-bottom:20px; font-size:19px;" class="chatbox flow-text">
-					</div>
-					<form class="chat-flex-send" action="javascript:void(0)">
-						 <div class="input-field">
-							  <i class="material-icons prefix">chat_bubble</i>
-								 <input id="message" type="text" class="validate">
-							  <label for="icon_prefix">Trimite mesaj</label>
-						  </div>
-					 </form>
-				</div>
+ <div id="container" style="width:97%; margin:auto;">
+	 	<div class="z-depth-1" id="street-view"></div>
+		<div class="row">
+			<div style="margin-top:8px; " class="col s4">
+				<div class="z-depth-1" style="width:105%;" id="map_canvas"></div>
 			</div>
-	  </div>
-	 </div>
-    <footer  style="margin-top:-45px; " class="page-footer">
-		    <div id="footerbar"  class="footer-copyright">
-		      <div  class="container">
-		      Made by <a style="color:white" class="text-lighten-3" href="https://mirceasorin.ro">Mircea Sorin</a>
-		      </div>
-		    </div>
-  	</footer>
+
+
+			<div style="min-height:450px;" class="col s4">
+				 <ul style="overflow-y: scroll;" class="collection ranking z-depth-1 " id="ranking">
+				  
+	  			 </ul>
+	           
+			</div>
+			
+			<div class="col s4 card">
+				<div style="height:450px; overflow-y: scroll;" class="chatbox" id="chatbox">
+				</div>
+				<form action="javascript:void(0)">
+					 <div class="input-field">
+						  <i class="material-icons prefix">chat_bubble</i>
+							 <input id="message" type="text" class="validate">
+						  <label for="icon_prefix">Trimite mesaj</label>
+					  </div>
+				 </form>
+			</div>
+		</div>
+   </div>
+          
  
 	<script>
 	//Page Layout
@@ -271,21 +213,19 @@
 	};
 	
 	function resize(){
-		var p = window.innerHeight;
+		var p = 38/100 *  window.innerHeight;
 		var sv = document.getElementById("street-view");
-		sv.style.height = 38/100 * p +"px";
-
-		var sv = document.getElementById("content-flex-container");
-		sv.style.height = 55/100 * p +"px";
+		sv.style.height = p +"px";
 		
-		p= document.getElementById('content-flex-container').clientHeight - 50;
+		p=53/100 *  window.innerHeight;
 		var sv = document.getElementById("map_canvas");
 		sv.style.height = p +"px";
 		
-
+		p=45/100 *  window.innerHeight;
 		var sv = document.getElementById("chatbox");
-		sv.style.height =  p +"px";
+		sv.style.height = p +"px";
 		
+		p=53/100 *  window.innerHeight;
 		var sv = document.getElementById("ranking");
 		sv.style.height = p +"px";
 		
@@ -295,6 +235,13 @@
 
 	</script>
 
+  <footer style="margin-top:-25px;" class="page-footer">
+    <div id="footerbar"  class="footer-copyright">
+      <div  class="container">
+      Made by <a style="color:white" class="text-lighten-3" href="https://mirceasorin.ro">Mircea Sorin</a>
+      </div>
+    </div>
+  </footer>
 
 
   <!--  Scripts-->

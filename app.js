@@ -1,26 +1,25 @@
 //Load Modules !!!
 var express = require("express");
 var http = require("http");
-var cookieParser = require('cookie-parser')
+var cookieParser = require('cookie-parser');
 var mysql      = require('mysql');
+require('console-stamp')(console, '[HH:MM:ss.l]');
 
 //Create an app express
 var app = express();
 var server = http.createServer(app).listen(8000);
 var io = require("socket.io")(server);
 
-
-require('console-stamp')(console, '[HH:MM:ss.l]');
 //App Variables
-var game= {};
-game.time=21;
-game.status="Waiting !"
+var game = {};
+game.time = 21;
+game.status = "Waiting !";
 
 game.gpsList = []; //  List of all avaiable gps coordonates
-game.connected_users =0; //Number of connected users
+game.connected_users = 0; //Number of connected users
 game.users = [];  // All Info about users who participate in the contest
 game.usersIp = []; // All the Ips of those connected
-game.gps ={}; //  Current game coordonates
+game.gps = {}; //  Current game coordonates
 game.statistics = []; // User Statistics ( emptyed everytime statistics are uploaded )
 game.dbRanking = [];
 
@@ -29,11 +28,11 @@ game.dbRanking = [];
 var APP_DEBUG = true;
 
 var connect_sql = {
-  host     : 'localhost',
-  user     : 'admin_sorynsoo',
-  password : 'inventor15',
-  database : 'admin_wherein'
-};
+        host     : 'localhost',
+        user     : 'admin_sorynsoo',
+        password : 'inventor15',
+        database : 'admin_wherein'
+    };
 
 //Server the static files
 app.use(express.static("./public"));
@@ -42,15 +41,15 @@ app.use(express.static("./public"));
 app.use(cookieParser());
 
 //Get cookies
-app.get('/get_cookies',function(req,res){
+app.get('/get_cookies', function (req, res) {
 	res.send(req.cookies);
 });
 
 //Set theme cookie
-app.get('/set_theme_cookie/:id', function(req, res) {
-  var id = req.params.id;
-  res.cookie('theme_id' , String( id ));
-  res.send('user ' + id);
+app.get('/set_theme_cookie/:id', function (req, res) {
+    var id = req.params.id;
+    res.cookie('theme_id', String(id));
+    res.send('user ' + id);
 });
 
 getRankingDb() ;
@@ -60,7 +59,7 @@ var connection = mysql.createConnection(connect_sql);
 
 //Make the Query to retrieve gps coordonates
 console.log("MYSQL Query process started");
-connection.query('SELECT * FROM  `wherein` ', function(err, rows, fields) {
+connection.query('SELECT * FROM  `wherein` ', function (err, rows, fields) {
   if (err) throw err;
 
   connection.end();
@@ -169,6 +168,17 @@ io.on("connection", function(socket){
 	    
 	});
 
+	socket.on('userProfileReq', function(userName) {
+		connection = mysql.createConnection(connect_sql);
+		var query = "SELECT * FROM  `users` WHERE  `name` LIKE  '"+userName+"'";
+		connection.query(query, function(err, rows, fields) {
+			connection.end();
+	  		if (err) throw err;
+	  		socket.emit('userProfileRes', rows[0]);
+	  		console.log(`277: UserProfileReq for ${userName} sent successfully`);
+	   });
+	});
+
 }); 
   
 //The Function where the game lives . Every round takes 20 seconds
@@ -250,6 +260,8 @@ function evaluate(answers){
 			if(game.statistics[i].email === answers[0].email){ // Daca utilizatorul este deja in statistici
 				game.statistics[i].won++;
 				game.statistics[i].participated++;
+				game.statistics[i].answerTime += answers[0].answerTime;
+				game.statistics[i].averageDistance += answers[0].dst;
 				find=true;
 				console.log(`248: GameStatistics - valorile pentru ( castigator )${game.statistics[i].email} actualizate in array-ul cu statistici`);
 			}
@@ -261,6 +273,9 @@ function evaluate(answers){
 			obj.email = answers[0].email;
 			obj.won = 1;
 			obj.participated = 1 ;
+			obj.answerTime = answers[0].answerTime;
+			obj.averageDistance = answers[0].dst;
+
 			game.statistics.push(obj);
 			console.log(`259: GameStatistics - (castigator ) ${answers[0].email} adaugat in array-ul cu statistici`);
 		}
@@ -275,6 +290,8 @@ function evaluate(answers){
 				if(game.statistics[j].email === answers[i].email)
 				{
 					game.statistics[j].participated++;
+					game.statistics[j].answerTime += answers[i].answerTime;
+					game.statistics[j].averageDistance += answers[i].dst;
 					find=true;
 					console.log(`273: GameStatistics - valorile pentru actualizate ( participant )${game.statistics[j].email}  in array-ul cu statistici`);
 				}
@@ -285,6 +302,8 @@ function evaluate(answers){
 				obj.email = answers[i].email;
 				obj.won = 0;
 				obj.participated = 1;
+				obj.answerTime = answers[i].answerTime;
+				obj.averageDistance = answers[i].dst;
 				game.statistics.push(obj);
 				console.log(`284: GameStatistics - (participant ) ${answers[i].email} adaugat in array-ul cu statistici`);
 			}
@@ -304,7 +323,7 @@ function update_user_statistics()
 		console.log(game.statistics);
 		for(var i=0; i<game.statistics.length; i++){
 			
-			var query = "UPDATE  `admin_wherein`.`users` SET  games_won = games_won + "+ game.statistics[i].won +", total_games = total_games + " + game.statistics[i].participated + " WHERE  `users`.`email` = '"+ game.statistics[i].email +"';";
+			var query = "UPDATE  `admin_wherein`.`users` SET  games_won = games_won + "+ game.statistics[i].won +", total_games = total_games + " + game.statistics[i].participated + ", games_answerTime = games_answerTime + "+ game.statistics[i].answerTime +", games_averageDistance = games_averageDistance + "+game.statistics[i].averageDistance +" WHERE  `users`.`email` = '"+ game.statistics[i].email +"';";
 			console.log(`304: User with email ${game.statistics[i].email} participated ${game.statistics[i].participated} times - won ${game.statistics[i].won} times`);
 			connection.query(query, function(err, rows, fields) {
 				if(err) throw err;
@@ -316,7 +335,7 @@ function update_user_statistics()
 
 		game.statistics = [];
 		connection.end();
-	},120000);
+	},12000);
 }
 
 function getRankingDb() {

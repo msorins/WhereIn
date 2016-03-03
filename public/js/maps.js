@@ -19,7 +19,8 @@
 
                 // display the lat/lng in your form's lat/lng fields
                 user.answer_lat = event.latLng.lat();
-                user.answer_lng= event.latLng.lng();
+                user.answer_lng = event.latLng.lng();
+                user.answerTime = 20 - game.time;
             });
         }
         function placeMarker(location) {

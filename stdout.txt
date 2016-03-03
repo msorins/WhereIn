@@ -1,0 +1,7 @@
+[[22:54:08.281]] [LOG]   MYSQL Query process started
+[[22:54:08.321]] [LOG]   Connected users : 1
+[[22:54:08.340]] [LOG]   Game dbRanking fetched 
+[[22:54:08.347]] [LOG]   MYSQL Query process finished
+[[22:54:08.347]] [LOG]   Starting game
+[[22:54:09.349]] [LOG]   Game started
+[[22:54:09.350]] [LOG]   Game time: 20s
