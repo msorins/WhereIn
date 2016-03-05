@@ -174,8 +174,71 @@
           </div>
         </div>
       </div>
-      <div style="width:100%; margin-top: 10px;" class="container card-panel" >
+      <div id="userSettingsSection" style="width:100%; margin-top: 10px; display:none;" class="container card-panel" >
         <h5> Cont utilizator </h5> <br>
+        <div class="row">
+		    <form class="col s12" action="javascript:void(0)">
+		      <div class="row">
+		        <div class="input-field col s6">
+		          <i class="material-icons prefix">account_circle</i>
+		          <input value="Nume" id="userSettingsName" type="text" class="validate">
+		          <label for="userSettingsName">Nume </label>
+		        </div>
+		        <div class="col s6">
+		        	<div class="file-field input-field">
+				      <div class="btn">
+				        <span>Poza Profil</span>
+				        <input type="file">
+				      </div>
+				      <div class="file-path-wrapper">
+				        <input class="file-path validate" type="text">
+				      </div>
+		        	</div>
+		        </div>
+		        <div class="input-field col s12">
+		          <i class="material-icons prefix">comment</i>
+		          <textarea length="150" id="userSettingsDescription" class="materialize-textarea"></textarea>
+		          <label for="textarea1">Despre mine</label>
+		        </div>
+		        <div class="col s6">
+		        	<h5>Retele de socializare</h5>
+		        	<div style="margin-left:10px;">
+			        	<span>
+			        		<input type="checkbox" id="userSettingsFacebook" />
+	    				    <label style="font-size:16px;" for="test6">Facebook</label>
+			        	</span>
+			        	<br>
+			        	<span>
+			        		<input type="checkbox" id="userSettingsGoogle"/>
+	    				    <label style="font-size:16px;" for="test7">Google+</label>
+			        	</span>
+			        	<br>
+			        	<span>
+			        		<input type="checkbox" id="userSettingsMicrosoft"/>
+	    				    <label style="font-size:16px;" for="test7">Microsoft</label>
+			        	</span>
+		        	</div>
+		        </div>
+		        <br>
+		        <div class="col s6">
+		        	<h6 style="font-size:17px; margin-top:20px;">Acceptare postare pe Facebook:</h6>
+		        	<div style="margin-left:15px; margin-top:20px;">
+			        	<div class="switch">
+						    <label>
+						      Nu
+						      <input id="userSettingsPostFacebook" type="checkbox" value="1">
+						      <span class="lever"></span>
+						      Da
+						    </label>
+						  </div>
+				   </div>
+		        </div>
+
+		      </div>
+		      <button style="float:right; background-color:#009688; margin-right:20px;" class="btn-floating btn-large waves-effect waves-light "><i class="material-icons">send</i></button>
+		    </form>
+  </div>
+        
       </div>
 	    </div>
 	  </div>

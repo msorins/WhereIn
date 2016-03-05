@@ -175,6 +175,7 @@ function has(object, key) {
 socket.on("userProfileRes", function(data){
 	delete_nodes("UserProfileContent");
 	var profile_picture, rating;
+	//Chose the right picture profile
 	if(has(data,'id_facebook'))
 		profile_picture = `https://graph.facebook.com/${data.id_facebook}/picture/?width=300&heigth=335`;
 	else 
@@ -183,14 +184,13 @@ socket.on("userProfileRes", function(data){
 		else
 			profile_picture = 'img/no-avatar.png';
 
-	/*
-	console.log(`Nume 1: ${user.name} , Nume 2: ${data.name}`);
+	//Hide logout button if it's not logged in user profile
 	if(user.name == data.name)
 		document.getElementById("logoutUser").style.display = "flex";
 	else
 		document.getElementById("logoutUser").style.display = "none";
-	*/
-
+	
+	//Form the Profile and pace it in HTML
 	rating = (data.total_games / data.games_won ) * 10 ; rating=rating.toFixed(2);
 	$("#UserProfileContent").append(`
 			<div style="margin-top:25px" class="row">
@@ -211,8 +211,24 @@ socket.on("userProfileRes", function(data){
 	          </div>
 	      </div>
 	`);
+	
+	//Open the modal with the profile
 	$('#modal3').openModal();
 });
+
+//Change user settings form
+document.forms[0].onsubmit = function () {
+	var data = {};
+	data.email = user.email;
+	data.name = document.getElementById("userSettingsName").value;
+	data.description = document.getElementById("userSettingsDescription").value;
+	if(document.getElementById("userSettingsPostFacebook").checked)
+		data.postfacebook = 1;
+	else
+		data.postfacebook = 0;
+
+	console.log(data);
+};
 
 //CHAT PART
 //===========================================================================
@@ -220,8 +236,8 @@ socket.on("message", function(message){
 	printMessage(message);
 });
 
-
-document.forms[0].onsubmit = function () {
+//Chat Form
+document.forms[1].onsubmit = function () {
     var input = document.getElementById("message");
     var msg = {};
     msg.user = user;	msg.msg = input.value;
@@ -304,16 +320,32 @@ var logged_in = false;
 
 
 socket.on("userLoginConfirm", function(data){
+	user=data;
 	user.name = data.name;
+	//Put User data in NavBar
 	document.getElementById('login-ul').style.display= 'none';
 	document.getElementById('user-ul').style.display= 'block';
 	document.getElementById('user_name').innerHTML = data.name;
 	document.getElementById('userProfileModal').setAttribute('onclick',`getUserProfile('${data.name}')`);
 
+	//Put User data in his settings options
+	document.getElementById('userSettingsName').value = data.name;
+	document.getElementById('userSettingsName').className += "active";
+
+	//Show User Settings Section
+	document.getElementById("userSettingsSection").style.display = "block";
+	if(data.id_facebook.length)
+		document.getElementById("userSettingsFacebook").checked = true;
+	if(data.id_google.length)
+		document.getElementById("userSettingsGoogle").checked = true;
+	if(data.id_microsoft.length)
+		document.getElementById("userSettingsMicrosoft").checked = true;
+
 	//Show login confirmation message
 	Materialize.toast('Salut, '+ user.name, 4000) // 4000 is the duration of the toast
 
 	console.log("Server confirmed login, hello "+ user.name);
+	console.log(data);
 });
 
 

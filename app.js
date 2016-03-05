@@ -154,6 +154,11 @@ io.on("connection", function(socket){
 	  					if(err) throw err;
 
 	  				//Send back the user his valid info
+	  				user["id_facebook"] = "";
+	  				user["id_google"] = "";
+	  				user["id_microsoft"] = "";
+
+	  				user[`id_"+user.network+"`] = user.network;
 		  			socket.emit('userLoginConfirm', user);
 	  				});
 	  		}
@@ -161,10 +166,13 @@ io.on("connection", function(socket){
 	  		{
 	  			if(rows.length === 1 && rows[0]["id_"+user.network] != user.id) // IF a change is required ( compare db network id with current one )
 		  		{
-		  			user.name = row[0].name;
+		  			user.name = rows[0].name;
 		  			query = "UPDATE  `admin_wherein`.`users` SET  `id_"+user.network+"` =  '"+user.id+"'  WHERE  `users`.`id` = "+rows[0].id;
 		  				if(err) throw err;
 		  		}
+		  		user["id_facebook"] = rows[0].id_facebook;
+	  			user["id_google"] = rows[0].id_google;
+	  			user["id_microsoft"] = rows[0].id_microsoft;
 		  		user.name = rows[0].name;
 
 		  		//Send back the user his valid info
@@ -332,6 +340,9 @@ function update_user_statistics()
 		for(var i=0; i<game.statistics.length; i++){
 			
 			var query = "UPDATE  `admin_wherein`.`users` SET  games_won = games_won + "+ game.statistics[i].won +", total_games = total_games + " + game.statistics[i].participated + ", games_answerTime = games_answerTime + "+ game.statistics[i].answerTime +", games_averageDistance = games_averageDistance + "+game.statistics[i].averageDistance +" WHERE  `users`.`email` = '"+ game.statistics[i].email +"';";
+			
+			console.log(query);
+
 			console.log(`304: User with email ${game.statistics[i].email} participated ${game.statistics[i].participated} times - won ${game.statistics[i].won} times`);
 			connection.query(query, function(err, rows, fields) {
 				if(err) throw err;

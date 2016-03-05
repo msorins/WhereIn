@@ -22,6 +22,18 @@
                 user.answer_lng = event.latLng.lng();
                 user.answerTime = 20 - game.time;
             });
+
+            google.maps.event.addListener(map, "mousedown", function(event){
+
+                 // place a marker
+                placeMarker(event.latLng);
+
+                // display the lat/lng in your form's lat/lng fields
+                user.answer_lat = event.latLng.lat();
+                user.answer_lng = event.latLng.lng();
+                user.answerTime = 20 - game.time;
+
+            });
         }
         function placeMarker(location) {
             // first remove all markers if there are any
