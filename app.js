@@ -52,6 +52,14 @@ app.get('/set_theme_cookie/:id', function (req, res) {
     res.send('user ' + id);
 });
 
+//Cache
+app.use(function (req, res, next) {
+    if (req.url.match(/^\/(css|js|img|font)\/.+/)) {
+        res.setHeader('Cache-Control', 'public, max-age=3600');
+    }
+    next();
+});
+
 getRankingDb() ;
 
 //Get coordonates from DB
@@ -138,48 +146,109 @@ io.on("connection", function(socket){
 		socket.emit('gameResRanking', game.dbRanking);
 	});
 
-	//DO DB operations with user data ( add accounts....)
+	//DO DB operations with user data ( add accounts, change accounts data )
 	socket.on('userDB', function(user){
-		//Check if User is Registred
 		connection = mysql.createConnection(connect_sql);
-
+		var res = {};
+		
+		//First Check IF user is registered. If it is register get his INFO, otherwise add him to DB
 		var query = "SELECT * FROM  `users` WHERE  `email` LIKE  '"+user.email+"'";
 		connection.query(query, function(err, rows, fields) {
 	  		if (err) throw err;
+	  		connection.end();
 
-	  		if(rows.length === 0) // IF It is not registered add all info about him
+	  		var globalRows = rows;
+	  		if(rows.length === 0) // It is not registered, add him to db and send his user data
 	  		{
+	  				var connection2 = mysql.createConnection(connect_sql);
 	  				query = "INSERT INTO  `admin_wherein`.`users` (`id` ,`id_"+user.network+"` ,`name` ,`email` ,`thumbnail`)VALUES (NULL ,  '"+user.id+"',  '"+user.name+"',  '"+user.email+"',  '"+user.thumbnail+"')";
 	  				connection.query(query, function(err,rows,fields){
 	  					if(err) throw err;
+	  					connection2.end();
 
-	  				//Send back the user his valid info
-	  				user["id_facebook"] = "";
-	  				user["id_google"] = "";
-	  				user["id_microsoft"] = "";
+	  				//Send back the user valid INFO
+	  				res["id_facebook"] = "";
+	  				res["id_google"] = "";
+	  				res["id_microsoft"] = "";
 
-	  				user[`id_"+user.network+"`] = user.network;
-		  			socket.emit('userLoginConfirm', user);
+	  				res[`id_"+user.network+"`] = user.network;
+	  				res.description = "";
+	  				socket.emit('userLoginConfirm', res);
 	  				});
 	  		}
-	  		else
+	  		else // It is registered . Want to add a new social account or edit his already existing account
 	  		{
-	  			if(rows.length === 1 && rows[0]["id_"+user.network] != user.id) // IF a change is required ( compare db network id with current one )
+	  			if(rows.length === 1 && rows[0]["id_"+user.network] != user.id) //If he is logged in with a new social account add that account to DB
 		  		{
-		  			user.name = rows[0].name;
+		  			var connection3 = mysql.createConnection(connect_sql);
 		  			query = "UPDATE  `admin_wherein`.`users` SET  `id_"+user.network+"` =  '"+user.id+"'  WHERE  `users`.`id` = "+rows[0].id;
+		  			connection3.query(query, function(err,rows,fields){
 		  				if(err) throw err;
+		  				connection3.end();
+		  			});
 		  		}
-		  		user["id_facebook"] = rows[0].id_facebook;
-	  			user["id_google"] = rows[0].id_google;
-	  			user["id_microsoft"] = rows[0].id_microsoft;
-		  		user.name = rows[0].name;
+		  	
+		  		//If user submitted the form to change his data 
+		  		if(user.type=="userEdit")
+		  		{
+		  			//Chec if his new name is not already taken
+		  			var connection4 = mysql.createConnection(connect_sql);
+		  			query ="SELECT * FROM  `users` WHERE  `name` LIKE  '" + user.name + "'";
+		  			connection4.query(query, function(err,rows, field){
+		  				if(err) throw err;
+		  				connection4.end();
+		  				if(rows.length == 0) //If his new name is not taken change it
+		  				{
+		  					res.name = user.name;
+		  					res.res="userEditSuccess";
+		  					io.emit("message", `${globalRows[0].name} si-a schimbat numele in <a onclick="getUserProfile('${user.name}')" href="#modal3" class="title modal-trigger"> ${user.name} </a> `);
+					  	}
+		  				else // Do not change his name and return the error
+		  				{
+		  					if(user.name == globalRows[0].name)
+		  						res.res="userEditSuccess";
+		  					else
+		  						res.res="userEditNameConflict";
+		  					res.name = globalRows[0].name; 
+		  					
+		  				}
 
-		  		//Send back the user his valid info
-		  		socket.emit('userLoginConfirm', user);
+
+
+		  				var connection5 = mysql.createConnection(connect_sql);
+		  				query = "UPDATE  `admin_wherein`.`users` SET  `name` =  '"+ res.name +"',`description` =  '"+ user.description +"',`postFacebook` =  '"+ user.postFacebook+ "'  WHERE  `users`.`id` = "+globalRows[0].id;
+					  	connection5.query(query);
+					  	connection5.end();
+
+		  				// Give the user all his data back
+		  				res.postFacebook = user.postFacebook;
+			  			res.id_facebook = globalRows[0].id_facebook;
+		  				res.id_google = globalRows[0].id_google;
+		  				res.id_microsoft =	globalRows[0].id_microsoft;
+
+		  				res.thumbnail = globalRows[0].thumbnail;
+						res.email = globalRows[0].email;
+		  				res.description = user.description;
+			  			
+			  			socket.emit('userLoginConfirm', res);
+			  		});
+		  		
+		  		}
+		  		else
+		  		{
+		  			//If the user just logged in get his data from DB
+		  			res.name = rows[0].name; 
+		  			res.postFacebook = rows[0].postFacebook;
+		  			res["id_facebook"] = rows[0].id_facebook;
+	  				res["id_google"] = rows[0].id_google;
+	  				res["id_microsoft"] = rows[0].id_microsoft;
+	  				res.thumbnail = rows[0].thumbnail;
+					res.email = rows[0].email;
+	  				res.description = rows[0].description;
+
+	  				socket.emit('userLoginConfirm', res);
+		  		}	
 	  		}
-	  			
-		  	connection.end();
 	    });
 	    
 	});
@@ -342,12 +411,14 @@ function update_user_statistics()
 			var query = "UPDATE  `admin_wherein`.`users` SET  games_won = games_won + "+ game.statistics[i].won +", total_games = total_games + " + game.statistics[i].participated + ", games_answerTime = games_answerTime + "+ game.statistics[i].answerTime +", games_averageDistance = games_averageDistance + "+game.statistics[i].averageDistance +" WHERE  `users`.`email` = '"+ game.statistics[i].email +"';";
 			
 			console.log(query);
-
+			
 			console.log(`304: User with email ${game.statistics[i].email} participated ${game.statistics[i].participated} times - won ${game.statistics[i].won} times`);
+			
 			connection.query(query, function(err, rows, fields) {
 				if(err) throw err;
 				console.log("done");
 			});
+			
 		
 		}
 		getRankingDb();

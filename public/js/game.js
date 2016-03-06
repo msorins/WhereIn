@@ -29,6 +29,7 @@ socket.on("connect", function(){
 	if( user.name.length !=0  && user.name.substring(0,4) != "user")
 	{
 		console.log(user);
+		user.type="login";
 		socket.emit('userDB', user);
 	}
 });
@@ -101,10 +102,11 @@ setInterval(function(){
 	//Send Answers when game finishes
 	if(game.time==0)
 	{
-		if(user.answer_lat !==0 && user.answer_lng!==0)
+		if(user.answer_lat !=0 && user.answer_lng!=0)
 		{
 			socket.emit("game_user_answer",user); 
 			console.log("game_user_answer (send): "+ user.name + " " + user.answer_lat+ " - " +user.answer_lng);
+			console.log(user);
 			//Delete markers for next game
 			deleteOverlays(); user.answer_lat=0; user.answer_lng=0;
 		}
@@ -200,6 +202,7 @@ socket.on("userProfileRes", function(data){
 	              <span class="card-title">${data.name}</span>
 	            </div>
 	            <div class="card-content">
+	              <p> ${data.description} </p>
 	              <p>Jocuri castigate: ${data.games_won}<br>
 	              	 Rating : ${rating}
 	              </p>
@@ -223,11 +226,15 @@ document.forms[0].onsubmit = function () {
 	data.name = document.getElementById("userSettingsName").value;
 	data.description = document.getElementById("userSettingsDescription").value;
 	if(document.getElementById("userSettingsPostFacebook").checked)
-		data.postfacebook = 1;
+		data.postFacebook = 1;
 	else
-		data.postfacebook = 0;
+		data.postFacebook = 0;
 
+	data.type = "userEdit";
 	console.log(data);
+	//alert("da");
+
+	socket.emit("userDB", data)
 };
 
 //CHAT PART
@@ -294,6 +301,7 @@ var logged_in = false;
 				user.id = p.id;
 				
 				//Send socket conaining user info to server
+				user.type="login";
 				socket.emit('userDB', user);
 
 				//Close login modal
@@ -320,8 +328,16 @@ var logged_in = false;
 
 
 socket.on("userLoginConfirm", function(data){
-	user=data;
+	//TO CHANGE HERE
+	
 	user.name = data.name;
+	user.description = data.description;
+	user.id_facebook = data.id_facebook;
+	user.id_google = data.id_google
+	user.id_microsoft = data.id_microsoft
+	user.thumbnail = data.thumbnail;
+	user.email = data.email;
+
 	//Put User data in NavBar
 	document.getElementById('login-ul').style.display= 'none';
 	document.getElementById('user-ul').style.display= 'block';
@@ -341,8 +357,21 @@ socket.on("userLoginConfirm", function(data){
 	if(data.id_microsoft.length)
 		document.getElementById("userSettingsMicrosoft").checked = true;
 
+	document.getElementById("userSettingsDescription").value = data.description;
+	if(data.postFacebook == 1)
+		document.getElementById("userSettingsPostFacebook").checked = true;
+	else
+		document.getElementById("userSettingsPostFacebook").checked = false;
+
 	//Show login confirmation message
-	Materialize.toast('Salut, '+ user.name, 4000) // 4000 is the duration of the toast
+	if(data.res == "userEditSuccess")
+		Materialize.toast('Schimbari salvate ! ', 4000) // 4000 is the duration of the toast
+	else
+		if(data.res == "userEditNameConflict")
+			Materialize.toast('Acest nume de utilizator este deja folosit !', 4000) // 4000 is the duration of the toast
+		else
+			Materialize.toast('Salut, '+ user.name, 4000) // 4000 is the duration of the toast
+
 
 	console.log("Server confirmed login, hello "+ user.name);
 	console.log(data);

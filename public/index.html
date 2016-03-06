@@ -16,8 +16,6 @@
   <!-- Favicon -->
   <link rel="shortcut icon" type="image/png" href="img/favicon.png"/>
 
-</head>
-<body onload="initMap()" id="body">
 <style>
 	 body{
 	  	background-image: url("/img/bg.png"); 
@@ -115,6 +113,9 @@
       margin-top:10px;
     }
 </style>
+</head>
+<body onload="initMap()" id="body">
+
  <!-- Modal: -->
   <div id="modal1" class="modal">
     <div class="modal-content">
@@ -197,27 +198,29 @@
 		        </div>
 		        <div class="input-field col s12">
 		          <i class="material-icons prefix">comment</i>
-		          <textarea length="150" id="userSettingsDescription" class="materialize-textarea"></textarea>
+		          <textarea length="150" id="userSettingsDescription" class="materialize-textarea">Descriere</textarea>
 		          <label for="textarea1">Despre mine</label>
 		        </div>
 		        <div class="col s6">
 		        	<h5>Retele de socializare</h5>
-		        	<div style="margin-left:10px;">
-			        	<span>
-			        		<input type="checkbox" id="userSettingsFacebook" />
-	    				    <label style="font-size:16px;" for="test6">Facebook</label>
-			        	</span>
-			        	<br>
-			        	<span>
-			        		<input type="checkbox" id="userSettingsGoogle"/>
-	    				    <label style="font-size:16px;" for="test7">Google+</label>
-			        	</span>
-			        	<br>
-			        	<span>
-			        		<input type="checkbox" id="userSettingsMicrosoft"/>
-	    				    <label style="font-size:16px;" for="test7">Microsoft</label>
-			        	</span>
-		        	</div>
+		        	<a class="modal-trigger" href="#modal2">
+			        	<div style="margin-left:10px;">
+				        	<span>
+				        		<input type="checkbox" id="userSettingsFacebook" />
+		    				    <label style="font-size:16px;" for="test6">Facebook</label>
+				        	</span>
+				        	<br>
+				        	<span>
+				        		<input type="checkbox" id="userSettingsGoogle"/>
+		    				    <label style="font-size:16px;" for="test7">Google+</label>
+				        	</span>
+				        	<br>
+				        	<span>
+				        		<input type="checkbox" id="userSettingsMicrosoft"/>
+		    				    <label style="font-size:16px;" for="test7">Microsoft</label>
+				        	</span>
+			        	</div>
+			        </a>
 		        </div>
 		        <br>
 		        <div class="col s6">
