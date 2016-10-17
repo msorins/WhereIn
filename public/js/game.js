@@ -1,5 +1,5 @@
 //Connection to socket
-var socket = io("http://188.213.21.45:8000");
+var socket = io("http://176.223.125.153:8000");
 
 //Info about the game
 var game = {};
@@ -34,9 +34,9 @@ socket.on("connect", function(){
 	}
 });
 
-//Receive Game Info from Server 
+//Receive Game Info from Server
 socket.on("game_stats", function(d_game){
-	console.log("game_stats ( received ) - time:" + d_game.time); 
+	console.log("game_stats ( received ) - time:" + d_game.time);
 	if(("gps" in game !== true) || (game.gps.lat !== d_game.gps.lat && game.gps.lng !== d_game.gps.lat))
 	{
 		game = d_game;
@@ -52,7 +52,7 @@ socket.on("game_stats", function(d_game){
 		});
 	}
 	game=d_game;
-	
+
 });
 
 //Receive last Game Ranking ( at the end )
@@ -79,7 +79,7 @@ socket.on("game_ranking", function(d_game){
 			      <img style="height:50px; width:50px;" src="${user.thumbnail}"  class="circle">
 			      ${uN}
 			      <p>Locul ${i} <br>
-			         Distanta : ${user.dst.toFixed(2)} km 
+			         Distanta : ${user.dst.toFixed(2)} km
 			      </p>
 			      ${star}
 			    </li>
@@ -87,7 +87,7 @@ socket.on("game_ranking", function(d_game){
 			`);
 	});
 });
- 
+
 
 socket.on("game_connected_users_res", function(d_game){
 	if(!user.name)
@@ -104,7 +104,7 @@ setInterval(function(){
 	{
 		if(user.answer_lat !=0 && user.answer_lng!=0)
 		{
-			socket.emit("game_user_answer",user); 
+			socket.emit("game_user_answer",user);
 			console.log("game_user_answer (send): "+ user.name + " " + user.answer_lat+ " - " +user.answer_lng);
 			console.log(user);
 			//Delete markers for next game
@@ -116,7 +116,7 @@ setInterval(function(){
 	if(game.time > 0)
 		document.getElementById("crt_countdown").innerHTML= game.time + " secunde ramase";
 	if(game.time == 0)
-		document.getElementById("crt_countdown").innerHTML= `<div style="margin-left:15px; margin-top:13px; position:absolute;" class="preloader-wrapper small active"> 
+		document.getElementById("crt_countdown").innerHTML= `<div style="margin-left:15px; margin-top:13px; position:absolute;" class="preloader-wrapper small active">
     <div class="spinner-layer spinner-green-only">
       <div class="circle-clipper left">
         <div class="circle"></div>
@@ -135,7 +135,7 @@ function delete_nodes(id){
 	while (myNode.firstChild) {
 	    myNode.removeChild(myNode.firstChild);
 	}
-} 
+}
 
 //Add ranking data from DB
 socket.on("gameResRanking", function(data){
@@ -180,7 +180,7 @@ socket.on("userProfileRes", function(data){
 	//Chose the right picture profile
 	if(has(data,'id_facebook'))
 		profile_picture = `https://graph.facebook.com/${data.id_facebook}/picture/?width=300&heigth=335`;
-	else 
+	else
 		if(has(data,'id_google'))
 			profile_picture = `https://plus.google.com/s2/photos/profile/{$data.id_google}?sz=330`;
 		else
@@ -191,7 +191,7 @@ socket.on("userProfileRes", function(data){
 		document.getElementById("logoutUser").style.display = "flex";
 	else
 		document.getElementById("logoutUser").style.display = "none";
-	
+
 	//Form the Profile and pace it in HTML
 	rating = (data.total_games / data.games_won ) * 10 ; rating=rating.toFixed(2);
 	$("#UserProfileContent").append(`
@@ -214,7 +214,7 @@ socket.on("userProfileRes", function(data){
 	          </div>
 	      </div>
 	`);
-	
+
 	//Open the modal with the profile
 	$('#modal3').openModal();
 });
@@ -280,7 +280,7 @@ function printMessage(message){
 	document.getElementById('chatboxID').scrollTop = 9999999;
 }
 
-//AUTH PART 
+//AUTH PART
 //==========================================================================
 var logged_in = false;
 	// Listen to signin requests
@@ -297,17 +297,17 @@ var logged_in = false;
 				user.network = r.network;
 				if(user.network == "windows")
 					user.network = "microsoft";
-				
+
 				user.id = p.id;
-				
+
 				//Send socket conaining user info to server
 				user.type="login";
 				socket.emit('userDB', user);
 
 				//Close login modal
-				$('#modal2').closeModal();				
+				$('#modal2').closeModal();
 			}
-			
+
 		});
 	});
 
@@ -329,7 +329,7 @@ var logged_in = false;
 
 socket.on("userLoginConfirm", function(data){
 	//TO CHANGE HERE
-	
+
 	user.name = data.name;
 	user.description = data.description;
 	user.id_facebook = data.id_facebook;

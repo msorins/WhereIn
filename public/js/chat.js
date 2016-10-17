@@ -1,12 +1,12 @@
 //Connection to Socket.IO
-var socket = io("http://188.213.21.45:8000");
+var socket = io("http://176.223.125.153:8000");
 
 socket.on("disconnect", function(){
 	printMessage("Deconectat de la server !");
 });
 
 socket.on("connect", function(){
-	
+
 });
 
 socket.on("message", function(message){

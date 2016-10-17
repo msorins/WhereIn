@@ -29,9 +29,9 @@ var APP_DEBUG = true;
 
 var connect_sql = {
         host     : 'localhost',
-        user     : 'admin_sorynsoo',
+        user     : 'root',
         password : 'inventor15',
-        database : 'admin_wherein'
+        database : 'wherein'
     };
 
 //Server the static files
@@ -78,7 +78,7 @@ connection.query('SELECT * FROM  `wherein` ', function (err, rows, fields) {
   console.log("MYSQL Query process finished");
   //START THE GAME
   console.log("Starting game");
-  
+
   var rnd = Math.floor(Math.random() * (game.gpsList.length-1)) + 1  ;
   game.gps.lat=	game.gpsList[rnd].lat;
   game.gps.lng=	game.gpsList[rnd].lng;
@@ -94,7 +94,7 @@ io.on("connection", function(socket){
 	{
 		var address = socket.handshake.address;
 		if(game.usersIp.indexOf(address) !=-1)
-			socket.emit("forceLogout-e1"); 
+			socket.emit("forceLogout-e1");
 
 		game.usersIp.push(address);
 	}
@@ -128,11 +128,11 @@ io.on("connection", function(socket){
 
 	//Respond to a request to see the game_stats ( gps location, time ... )
 	socket.on('game_req',function(){
-		socket.emit("game_stats", game);     
+		socket.emit("game_stats", game);
 	});
 
-	//Receive and put all answers of user in an array ( when game finishes) 
-	socket.on('game_user_answer', function(user){ 
+	//Receive and put all answers of user in an array ( when game finishes)
+	socket.on('game_user_answer', function(user){
 		game.users.push(user);
 	});
 
@@ -150,7 +150,7 @@ io.on("connection", function(socket){
 	socket.on('userDB', function(user){
 		connection = mysql.createConnection(connect_sql);
 		var res = {};
-		
+
 		//First Check IF user is registered. If it is register get his INFO, otherwise add him to DB
 		var query = "SELECT * FROM  `users` WHERE  `email` LIKE  '"+user.email+"'";
 		connection.query(query, function(err, rows, fields) {
@@ -187,8 +187,8 @@ io.on("connection", function(socket){
 		  				connection3.end();
 		  			});
 		  		}
-		  	
-		  		//If user submitted the form to change his data 
+
+		  		//If user submitted the form to change his data
 		  		if(user.type=="userEdit")
 		  		{
 		  			//Chec if his new name is not already taken
@@ -209,8 +209,8 @@ io.on("connection", function(socket){
 		  						res.res="userEditSuccess";
 		  					else
 		  						res.res="userEditNameConflict";
-		  					res.name = globalRows[0].name; 
-		  					
+		  					res.name = globalRows[0].name;
+
 		  				}
 
 
@@ -229,15 +229,15 @@ io.on("connection", function(socket){
 		  				res.thumbnail = globalRows[0].thumbnail;
 						res.email = globalRows[0].email;
 		  				res.description = user.description;
-			  			
+
 			  			socket.emit('userLoginConfirm', res);
 			  		});
-		  		
+
 		  		}
 		  		else
 		  		{
 		  			//If the user just logged in get his data from DB
-		  			res.name = rows[0].name; 
+		  			res.name = rows[0].name;
 		  			res.postFacebook = rows[0].postFacebook;
 		  			res["id_facebook"] = rows[0].id_facebook;
 	  				res["id_google"] = rows[0].id_google;
@@ -247,10 +247,10 @@ io.on("connection", function(socket){
 	  				res.description = rows[0].description;
 
 	  				socket.emit('userLoginConfirm', res);
-		  		}	
+		  		}
 	  		}
 	    });
-	    
+
 	});
 
 	socket.on('userProfileReq', function(userName) {
@@ -264,14 +264,14 @@ io.on("connection", function(socket){
 	   });
 	});
 
-}); 
-  
+});
+
 //The Function where the game lives . Every round takes 20 seconds
 function games(){
 	var interval = setInterval(function(){
 	game.time -= 1;
 
-	//Start or Restart the game 
+	//Start or Restart the game
 	if(game.time == 20 )
 	{
 		game.status ="In progress";
@@ -284,7 +284,7 @@ function games(){
 		game.status="Ranking answers";
 		console.log("Ranking process started");
 
-		setTimeout(function() { 
+		setTimeout(function() {
 			//Evaluate the answers after 3 seconds
 			if(game.users.length) // If there are users
 			{
@@ -312,7 +312,7 @@ function games(){
 	}
 	if(game.time % 5 ==0 || game.time<=0)
 		console.log("Game time: " + game.time +"s") ;
-	}, 1000);        
+	}, 1000);
 }
 
 
@@ -333,7 +333,7 @@ function evaluate(answers){
 
 	//Print all Results
 	answers.forEach(function(usr){
-		console.log(`236: User ${usr.name} - ${usr.email } chose => ${usr.answer_lat} - ${usr.answer_lng} . Distance : ${usr.dst}`);  
+		console.log(`236: User ${usr.name} - ${usr.email } chose => ${usr.answer_lat} - ${usr.answer_lng} . Distance : ${usr.dst}`);
 	});
 
 	var find ;
@@ -395,7 +395,7 @@ function evaluate(answers){
 
 		}
 	}
-	
+
 	console.log(`Game result : Winner: ${answers[0].name} , distance ${answers[0].dst}`);
 	return answers;
 }
@@ -407,19 +407,19 @@ function update_user_statistics()
 		connection = mysql.createConnection(connect_sql);
 		console.log(game.statistics);
 		for(var i=0; i<game.statistics.length; i++){
-			
+
 			var query = "UPDATE  `admin_wherein`.`users` SET  games_won = games_won + "+ game.statistics[i].won +", total_games = total_games + " + game.statistics[i].participated + ", games_answerTime = games_answerTime + "+ game.statistics[i].answerTime +", games_averageDistance = games_averageDistance + "+game.statistics[i].averageDistance +" WHERE  `users`.`email` = '"+ game.statistics[i].email +"';";
-			
+
 			console.log(query);
-			
+
 			console.log(`304: User with email ${game.statistics[i].email} participated ${game.statistics[i].participated} times - won ${game.statistics[i].won} times`);
-			
+
 			connection.query(query, function(err, rows, fields) {
 				if(err) throw err;
 				console.log("done");
 			});
-			
-		
+
+
 		}
 		getRankingDb();
 
@@ -447,13 +447,13 @@ function getRankingDb() {
 //Calculare Distanta intre 2 pc
 function dist(lat1, lon1, lat2, lon2) {
     //Radius of the earth in:  1.609344 miles,  6371 km  | var R = (6371 / 1.609344);
-    var R = 3958.7558657440545; // Radius of earth in Miles 
+    var R = 3958.7558657440545; // Radius of earth in Miles
     var dLat = toRad(lat2-lat1);
-    var dLon = toRad(lon2-lon1); 
+    var dLon = toRad(lon2-lon1);
     var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-            Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * 
-            Math.sin(dLon/2) * Math.sin(dLon/2); 
-    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+            Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+            Math.sin(dLon/2) * Math.sin(dLon/2);
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
     var d = R * c;
     return d;
 }
@@ -461,5 +461,4 @@ function dist(lat1, lon1, lat2, lon2) {
 function toRad(Value) {
     /** Converts numeric degrees to radians */
     return Value * Math.PI / 180;
-}   
- 
+}
