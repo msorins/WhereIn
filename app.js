@@ -28,10 +28,10 @@ game.dbRanking = [];
 var APP_DEBUG = true;
 
 var connect_sql = {
-        host     : 'localhost',
-        user     : 'root',
-        password : 'inventor15',
-        database : 'wherein'
+        host     : '##',
+        user     : '##',
+        password : '##',
+        database : '##'
     };
 
 //Server the static files
